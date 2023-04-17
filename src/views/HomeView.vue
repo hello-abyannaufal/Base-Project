@@ -2,17 +2,25 @@
   <div class="home">
     <img class='mx-auto' alt="Vue logo" src="../assets/logo.png">
     <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+    <Button color="success" :round="true" :lined="true" @run="submit">Hello World</Button>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
+import Button from '@/components/Widgets/Button.vue'
 
 export default defineComponent({
   name: 'HomeView',
   components: {
     HelloWorld,
+    Button
   },
+  methods: {
+    submit() {
+      console.log('Clicked')
+    }
+  }
 });
 </script>
