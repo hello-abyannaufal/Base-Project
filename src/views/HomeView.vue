@@ -13,11 +13,6 @@ export default defineComponent({
   name: 'HomeView',
   components: {
     HelloWorld
-  },
-  methods: {
-    submit() {
-      console.log('Clicked')
-    }
   }
 });
 </script>
