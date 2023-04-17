@@ -1,5 +1,7 @@
 <template>
-  <div v-if="(dmode == false)">
+
+  <!-- This is for initial button -->
+  <div v-if="(devMode == false)">
     <button :class="theme" @click="execute()">
       <div>
         <slot></slot>
@@ -7,66 +9,56 @@
     </button>
   </div>
 
+  <!-- This is for advanced button (Dev Mode) -->
   <div v-else>
-    <button :class="theme" class="shape-polygon" @click="execute()">
-      <div>
+    <button :class="theme" @click="execute()">
+      <p v-if="(shape == 'parallelogram')" class="skew-x-12">
         <slot></slot>
-      </div>
+      </p>
+      <p v-else>
+        <slot></slot>
+      </p>
     </button>
   </div>
+  
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { computed, defineComponent } from 'vue'
 import Setter from '@/misc/button'
 
 export default defineComponent({
   props: {
     color: { required: true, type: String },
-    round: { required: true, type: Boolean },
     lined: { required: true, type: Boolean },
-    dev: { type: Boolean }
+    shape: { type: String },
+    round: { type: Boolean },
+    creator: { type: Boolean }
+  },
+  setup(props) {
+    const setTheme = computed(() => {
+      if(props.creator == true) {
+        return Setter.custom(props.color, props.shape, props.lined)
+      } else {
+        return Setter.init(props.color, props.round, props.lined)
+      }
+    })
+    return { setTheme }
   },
   data() {
     return {
-      theme: Setter.process(this.color, this.round, this.lined),
-      dmode: false
+      theme: Setter.custom(this.color, this.shape, this.lined),
+      devMode: false
     }
   },
-  // setup(props) {
-  //   const setTheme = computed(() => {
-  //     // Set for rounded button
-  //     const rounded = `rounded-${props.round}`
-
-  //     // Set for color and depth button
-  //     const attribute = props.color.split('-')
-  //     const color = attribute[0]
-  //     const depth = Number(attribute[1])
-  //     const hover = depth + 100
-
-  //     return `bg-${color}-${depth} hover:bg-${color}-${String(hover)} ${rounded}`
-  //   })
-  //   return { setTheme }
-  // },
   methods: {
     execute() {
       this.$emit('run')
     }
   },
   mounted() {
-    this.dmode = this.dev
+    this.devMode = this.creator
+    this.theme = this.setTheme
   }
 })
 </script>
-
-<style>
-.shape-polygon{
-  clip-path: polygon(
-    20% 0%,
-    100% 0%,
-    80% 100%,
-    0% 100%
-  ) !important
-}
-
-</style>
